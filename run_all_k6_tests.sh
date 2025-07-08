@@ -83,14 +83,5 @@ for ingress in "${INGRESSES[@]}"; do
   python3 utils/aggregate_csv.py "$ingress"
 done
 
-echo "📤 [8/8] Pushing results to GitHub..."
-if ! git diff --quiet results/; then
-  git add results/
-  git commit -m "Add k6 test results for ingress: ${INGRESSES[*]}"
-  git push
-else
-  echo "No changes in results/, skipping git commit and push."
-fi
-
 echo "🎉 All ingress test workflows completed successfully!"
 
