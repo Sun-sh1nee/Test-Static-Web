@@ -3,6 +3,7 @@ import os
 import json
 import csv
 import argparse
+import re
 from statistics import quantiles
 from collections import defaultdict
 from datetime import datetime
@@ -32,11 +33,14 @@ for impl in targets:
         if not fname.endswith('.json'):
             continue
 
+        # กรองเฉพาะ pod ชื่อ k6-test-{ingress}-1/2/3-*
+        if not re.match(rf'^k6-test-{impl}-[123]-.*_json\.json$', fname):
+            continue
+
         filepath = os.path.join(json_dir, fname)
         outname = fname.replace('_json.json', '_csv.csv')
         outpath = os.path.join(csv_dir, outname)
 
-        # แก้ไขส่วนนี้
         lines = []
         with open(filepath) as f:
             for line in f:
@@ -47,7 +51,6 @@ for impl in targets:
                     obj = json.loads(line)
                     lines.append(obj)
                 except json.JSONDecodeError:
-                    # ถ้าไม่ใช่ JSON บรรทัดนี้ ข้ามไปเลย
                     continue
 
         latency_data = defaultdict(list)
@@ -59,7 +62,6 @@ for impl in targets:
                 continue
             if point.get('type') != 'Point':
                 continue
-
 
             metric = point.get('metric')
             time_str = point['data']['time']
