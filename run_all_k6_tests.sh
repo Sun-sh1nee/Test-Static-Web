@@ -53,7 +53,7 @@ for ingress in "${INGRESSES[@]}"; do
 
     if [[ $still_running -eq 1 ]]; then
       echo "⌛ $ingress test is still running or pending..."
-      sleep 10
+      sleep 30
     else
       break
     fi
