@@ -1,0 +1,23 @@
+apiVersion: k6.io/v1alpha1
+kind: K6
+metadata:
+  name: k6-test-traefik
+  namespace: k6-tests-traefik
+spec:
+  parallelism: 3
+  script:
+    configMap:
+      name: k6-traefik-script
+      file: load_test.js
+  arguments: "--out json=/tests/output.json"
+  runner:
+    env:
+      - name: K6_NO_SETUP_TEARDOWN
+        value: "true"
+    resources:
+      limits:
+        cpu: "500m"
+        memory: "512Mi"
+      requests:
+        cpu: "250m"
+        memory: "256Mi"
