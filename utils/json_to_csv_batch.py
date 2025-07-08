@@ -36,16 +36,30 @@ for impl in targets:
         outname = fname.replace('_json.json', '_csv.csv')
         outpath = os.path.join(csv_dir, outname)
 
+        # แก้ไขส่วนนี้
+        lines = []
         with open(filepath) as f:
-            lines = [json.loads(line) for line in f if line.strip()]
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    obj = json.loads(line)
+                    lines.append(obj)
+                except json.JSONDecodeError:
+                    # ถ้าไม่ใช่ JSON บรรทัดนี้ ข้ามไปเลย
+                    continue
 
         latency_data = defaultdict(list)
         error_count = defaultdict(int)
         request_count = defaultdict(int)
 
         for point in lines:
+            if not isinstance(point, dict):
+                continue
             if point.get('type') != 'Point':
                 continue
+
 
             metric = point.get('metric')
             time_str = point['data']['time']
@@ -83,3 +97,4 @@ for impl in targets:
                 })
 
         print(f"✅ Generated: {outpath}")
+

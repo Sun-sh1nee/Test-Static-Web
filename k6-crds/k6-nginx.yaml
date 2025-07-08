@@ -4,12 +4,8 @@ metadata:
   name: k6-test-nginx
   namespace: k6-tests-nginx
 spec:
-  parallelism: 3                      # จำนวน pod ที่ใช้รัน
-  script:
-    configMap:
-      name: k6-nginx-script           # ต้องตรงกับ configMap ที่เราสร้าง
-      file: load_test.js
-  arguments: "--out json=/tests/output.json"
+  parallelism: 3
+  arguments: "--out json=/dev/stdout"
   runner:
     env:
       - name: K6_NO_SETUP_TEARDOWN
@@ -21,3 +17,7 @@ spec:
       requests:
         cpu: "250m"
         memory: "256Mi"
+  script:
+    configMap:
+      name: k6-nginx-script
+      file: load_test.js

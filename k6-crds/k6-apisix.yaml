@@ -5,11 +5,7 @@ metadata:
   namespace: k6-tests-apisix
 spec:
   parallelism: 3
-  script:
-    configMap:
-      name: k6-apisix-script
-      file: load_test.js
-  arguments: "--out json=/tests/output.json"
+  arguments: "--out json=/dev/stdout"
   runner:
     env:
       - name: K6_NO_SETUP_TEARDOWN
@@ -21,3 +17,8 @@ spec:
       requests:
         cpu: "250m"
         memory: "256Mi"
+  script:
+    configMap:
+      name: k6-apisix-script
+      file: load_test.js
+
