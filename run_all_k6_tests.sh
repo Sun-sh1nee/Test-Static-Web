@@ -2,7 +2,12 @@
 
 set -e
 
-INGRESSES=("nginx" "apisix" "traefik" "haproxy")
+# ถ้าไม่ใส่อะไรจะรันทั้งหมด (default)
+if [ "$#" -eq 0 ]; then
+  INGRESSES=("nginx" "apisix" "traefik" "haproxy")
+else
+  INGRESSES=("$@")
+fi
 
 echo "🚀 [1/7] Creating namespaces..."
 for ingress in "${INGRESSES[@]}"; do
@@ -49,7 +54,8 @@ done
 
 echo "📤 [7/7] Pushing results to GitHub..."
 git add results/
-git commit -m "Add k6 test results for all Ingress controllers"
+git commit -m "Add k6 test results for ingress: ${INGRESSES[*]}"
 git push
 
 echo "🎉 All ingress test workflows completed successfully!"
+
